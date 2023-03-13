@@ -32,5 +32,5 @@ void main()
     uart_init();
     // say hello
     uart_puts("Hello World!\n");
-    shell();
+    //shell();
 }

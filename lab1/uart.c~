@@ -48,9 +48,6 @@ void uart_init()
     //Write to GPPUDCLK0/1 to remove the clock 
     *GPPUDCLK0 = 0;        // flush GPIO setup
 
-    r=500; while(r--) { asm volatile("nop"); }
-
-
     /* initialize UART */
     // if set the mini UART is enable.
     *AUX_ENABLE |=1;       

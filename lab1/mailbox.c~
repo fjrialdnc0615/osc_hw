@@ -100,7 +100,7 @@ void get_size_and_memory_address()
     }
 }
 
-//it takes the channel identifier.
+
 int mbox_call(unsigned char ch)
 {
     unsigned int r = (((unsigned int)((unsigned long)&mbox)&~0xF) | (ch&0xF));
