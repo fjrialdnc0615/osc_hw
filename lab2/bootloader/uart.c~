@@ -1,6 +1,4 @@
 #include "gpio.h"
-#include "utils.h"
-#include "mailbox.h"
 /* Auxilary mini UART registers */
 #define AUX_ENABLE      ((volatile unsigned int*)(MMIO_BASE+0x00215004))
 #define AUX_MU_IO       ((volatile unsigned int*)(MMIO_BASE+0x00215040))
@@ -165,53 +163,4 @@ void cancel_reset() {
     set(PM_WDOG, PM_PASSWORD | 0);  // number of watchdog tick
 }
 
-void shell() {
-	//define space
-	char array_space[128] = {0};
-	//a pointer point to space
-	char* input_string = array_space;
-	char single_element;
-	while(1)
-	{
-		
-		uart_puts("# ");
-		//define keyin 
-		while(1){
-			single_element = uart_getc();
-			if(single_element == '\0') uart_puts("there is a zero\n");
-			*input_string++ = single_element;
-			uart_send(single_element);
-			if(single_element == '\n'){
-				*input_string = '\0';
-				break;
-			};
-		};
-		
-		input_string = array_space;
-			
-		if(str_compare(input_string,"help"))
-		{
-			uart_puts("help	:print this help menu\n");
-			uart_puts("hello	:print the hello menu\n");
-			uart_puts("reboot	:reboot the device\n");
-			uart_puts("info	:get the hardware information\n");
-		}
-		else if(str_compare(input_string,"hello"))
-		{
-			uart_puts("Hello World!\n");
-		}
-		else if (str_compare(input_string,"info"))
-		{
-			get_board_revision();
-			get_size_and_memory_address();
-			uart_puts("\n");
-		}
-		else if (str_compare(input_string,"reboot"))
-			reset(500);
-		
-		else
-			uart_puts("no related command!\n");
-		
-	};
-}
 
