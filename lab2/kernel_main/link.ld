@@ -23,29 +23,22 @@
  *
  */
 
-#include "uart.h"
-void main()
+SECTIONS
 {
-    	// set up serial console
-	uart_init();
-    	unsigned int size = 0;
-    	unsigned char *sb = (unsigned char *) &size;
-    	for (int i=0;i<4;i++)
-		sb[i] = uart_getc();
-	
-	uart_puts("get size checked\n");
+    . = 0x80000;
+    .text : { KEEP(*(.text.boot)) *(.text .text.* .gnu.linkonce.t*) }
+    .rodata : { *(.rodata .rodata.* .gnu.linkonce.r*) }
+    PROVIDE(_data = .);
+    .data : { *(.data .data.* .gnu.linkonce.d*) }
+    .bss (NOLOAD) : {
+        . = ALIGN(16);
+        __bss_start = .;
+        *(.bss .bss.*)
+        *(COMMON)
+        __bss_end = .;
+    }
+    _end = .;
 
-	char* kernel = (char *) 0x80000;
-	while(size--)
-		*kernel++=uart_getc();
-
-	uart_puts("get file status checked\n");
-	
-	uart_getc();
-	asm volatile 
-	(
-
-	 	"mov x30, 0x80000;"
-		"ret;"	
-	);
+   /DISCARD/ : { *(.comment) *(.gnu*) *(.note*) *(.eh_frame*) }
 }
+__bss_size = (__bss_end - __bss_start)>>3;
