@@ -4,7 +4,7 @@ import os.path
 import sys
 
 
-s = serial.Serial("COM5",baudrate=115200)
+s = serial.Serial("/dev/tty.usbserial-0001",baudrate=115200)
 
 size = os.stat("kernel8_main.img").st_size
 size_tobyte = size.to_bytes(4, 'little')
@@ -19,6 +19,7 @@ def readline(s):
     size_string = ""
     while True:
         c = s.read().decode()
+        print(c)
         if c == '\r':
             continue
         if c == '\n':
