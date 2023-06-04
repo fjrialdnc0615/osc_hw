@@ -39,8 +39,9 @@ void timer_handler(){
         asm volatile ("msr cntp_cval_el0, %0"::"r"(next->exe_time));
     }
     //disable timer interrupt!
-    else 
+    else{ 
         {asm volatile ("msr CNTP_CTL_EL0, %0"::"r"(0));};
+    }
 	timeout_event_head = timeout_event_head->next;
 }
 

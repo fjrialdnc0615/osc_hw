@@ -20,3 +20,6 @@ run:
 	qemu-system-aarch64 -M raspi3b -serial null -serial stdio -initrd initramfs.cpio -dtb bcm2710-rpi-3-b-plus.dtb  -display none  -kernel kernel8.img
 test:
 	qemu-system-aarch64 -M raspi3b -serial null -serial stdio -initrd initramfs.cpio -dtb bcm2710-rpi-3-b-plus.dtb  -display none  -kernel kernel8.img -machine dumpdtb=dtb.dtb 
+
+rpi:
+	sudo screen /dev/tty.usbserial-0001 115200

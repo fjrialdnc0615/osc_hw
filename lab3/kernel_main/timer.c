@@ -32,7 +32,7 @@ void add_timer(timer_callback cb, char *msg, unsigned long duration){
 	struct timeout_event* event = (struct timeout_event *)simple_malloc(sizeof(struct timeout_event));
 	event->register_time = cntpct_el0/cntfrq_el0;
 	event->callback = cb;
-	
+	event->next = 0;
 	//duration + current time
 	event->exe_time = duration*cntfrq_el0 + cntpct_el0;
 
@@ -40,7 +40,7 @@ void add_timer(timer_callback cb, char *msg, unsigned long duration){
 		event->msg[i] = msg[i];
 		if(msg[i]=='\0') break;
 	}
-	
+
 	struct timeout_event* cur_ptr = timeout_event_head; 
 	struct timeout_event* prev_ptr = NULL;
 	while(1){

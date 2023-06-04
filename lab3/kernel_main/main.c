@@ -24,6 +24,8 @@ void main()
 	uart_send('\n');
 	fdt_traverse(get_cpio_addr,_dtb_ptr);
 	read_file();
+    
+    
 	enable_uart_irt();
 	
 	set_example_timeout();
@@ -64,6 +66,8 @@ void exception_handler_c(){
 	uart_puts("ec: ");
 	uart_hex(ec);
 	uart_send('\n');
+    
+    while(1);
 }
 
 
@@ -77,6 +81,7 @@ void irq_exception_handler_c(){
 		}
 	else if(*AUX_MU_IIR_REG & 2)
 		add_task(transmit_handler,2);
+
 	if (!doing_task)
     {
         doing_task = 1;
