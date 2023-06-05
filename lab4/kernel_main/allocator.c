@@ -1,6 +1,4 @@
-#include "allocator.h"
-#include "utils.h"
-#include "uart.h"
+#include "poly.h"
 
 #define MEM_START 0x20000000
 unsigned long *malloc_cur_ptr = (unsigned long *)MEM_START;

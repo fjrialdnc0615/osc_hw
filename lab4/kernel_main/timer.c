@@ -1,12 +1,5 @@
-#include "uart.h"
-#include "mailbox.h"
-#include "utils.h"
-#include "shell.h"
-#include "dtb.h"
-#include "_cpio.h"
-#include "except.h"
-#include "timer.h"
-#include "allocator.h"
+#include "poly.h"
+
 
 struct timeout_event *timeout_event_head=NULL;
 typedef void (*timer_callback)(char *);
@@ -29,10 +22,10 @@ void add_timer(timer_callback cb, char *msg, unsigned long duration){
     unsigned long long cntfrq_el0;
     asm volatile ("mrs %0, cntfrq_el0":"=r"(cntfrq_el0));
 
-	struct timeout_event* event = (struct timeout_event *)simple_malloc(sizeof(struct timeout_event));
+	struct timeout_event* event = (struct timeout_event *)y_malloc(sizeof(struct timeout_event));
 	event->register_time = cntpct_el0/cntfrq_el0;
 	event->callback = cb;
-	
+	event->next = 0;
 	//duration + current time
 	event->exe_time = duration*cntfrq_el0 + cntpct_el0;
 
@@ -40,7 +33,7 @@ void add_timer(timer_callback cb, char *msg, unsigned long duration){
 		event->msg[i] = msg[i];
 		if(msg[i]=='\0') break;
 	}
-	
+
 	struct timeout_event* cur_ptr = timeout_event_head; 
 	struct timeout_event* prev_ptr = NULL;
 	while(1){

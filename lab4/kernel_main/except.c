@@ -1,12 +1,5 @@
-#include "uart.h"
-#include "mailbox.h"
-#include "utils.h"
-#include "shell.h"
-#include "dtb.h"
-#include "_cpio.h"
-#include "except.h"
-#include "timer.h"
-#include "allocator.h"
+#include "poly.h"
+
 #define AUX_MU_IO	   ((volatile unsigned int*)(0x3f215040))
 #define AUX_MU_IER_REG ((volatile unsigned int*)(0x3f215044))
 
@@ -39,8 +32,9 @@ void timer_handler(){
         asm volatile ("msr cntp_cval_el0, %0"::"r"(next->exe_time));
     }
     //disable timer interrupt!
-    else 
+    else{ 
         {asm volatile ("msr CNTP_CTL_EL0, %0"::"r"(0));};
+    }
 	timeout_event_head = timeout_event_head->next;
 }
 
@@ -70,7 +64,7 @@ void transmit_handler(){
 
 void add_task(task_callback cb, unsigned int priority)
 {
-    task *new_task = (task *)simple_malloc(sizeof(task));
+    task *new_task = (task *)y_malloc(sizeof(task));
     new_task->priority = priority;
     new_task->callback = cb;
     new_task->next = 0;

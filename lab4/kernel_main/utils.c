@@ -1,6 +1,5 @@
-#include <stdint.h>
-#include <stddef.h>
-int str_compare(const char* a, const char* b){
+#include "poly.h"
+int str_compare(char* a, char* b){
         int sentinel_value = 0;
         while(*a != '\0' || *b != '\0')
         {
@@ -45,4 +44,10 @@ unsigned int utils_str2uint_dec(const char *str)
         ++str;
     }
     return value;
+}
+
+
+char *align_up(char *addr, unsigned alignment)
+{
+    return (char *) (((unsigned long long) addr + alignment - 1) & ~((unsigned long long) alignment - 1));
 }

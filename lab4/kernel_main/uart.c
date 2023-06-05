@@ -1,8 +1,5 @@
-#include "gpio.h"
-#include "utils.h"
-#include "mailbox.h"
-#include "_cpio.h"
-#include "dtb.h"
+#include "poly.h"
+
 /* Auxilary mini UART registers */
 #define AUX_ENABLE      ((volatile unsigned int*)(MMIO_BASE+0x00215004))
 #define AUX_MU_IO       ((volatile unsigned int*)(MMIO_BASE+0x00215040))
@@ -25,8 +22,7 @@
 #define IRQ_PENDING_1 ((volatile unsigned int*)(0x3f00b204))
 #define AUX_IRQ ((volatile unsigned int*)(0x3f215054))
 
-volatile unsigned int *CORE0_INTERRUPT_SOURCE = (unsigned int *) 0x40000060;
-volatile unsigned int *AUX_MU_IIR_REG = (unsigned int *) 0x3f215048;
+
 
 
 //for reboot address
@@ -212,5 +208,60 @@ void enable_uart_irt(){
 	*AUX_MU_IER_REG = ier_reg;
 	ier_reg = *AUX_MU_IER_REG;
 }
+void uart_puthex(unsigned int d)
+{
+    uart_puts("0x");
+    unsigned int n;
+    int c;
+    for (c = 28; c >= 0; c -= 4) {
+        // get highest tetrad
+        n = (d >> c) & 0xF;
+        // 0-9 => '0'-'9', 10-15 => 'A'-'F'
+        n += n > 9 ? 0x37 : 0x30;
+        uart_send(n);
+    }
+}
 
+void uart_puthexll(u64 d)
+{
+    uart_puts("0x");
+    unsigned int n;
+    int c;
+    for (c = 60; c >= 0; c -= 4) {
+        // get highest tetrad
+        n = (d >> c) & 0xF;
+        // 0-9 => '0'-'9', 10-15 => 'A'-'F'
+        n += n > 9 ? 0x37 : 0x30;
+        uart_send(n);
+    }
+}
+
+
+//uart_printf
+int (*pc)(int) = uart_send;
+extern int (*pc)(int);
+
+void out(char *start, u32 len)
+{
+    char *end = start + len;
+    while (start != end)
+        pc(*start++);
+}
+
+char *fmt_u(u64 x, char *s)
+{
+    if (x==0)
+        *--s = '0';
+    for(; x; x/=10) *--s = '0' + x % 10;
+    return s;
+}
+
+char buf[64];
+
+void uart_putu(u64 x)
+{
+    char *z = buf + sizeof(buf);
+    char *a = fmt_u(x, z);
+    out(a, z-a);
+}
 //void 

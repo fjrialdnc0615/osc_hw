@@ -1,7 +1,5 @@
-#include "uart.h"
-#include "_cpio.h"
-#include "utils.h"
-#include "allocator.h"
+#include "poly.h"
+
 
 extern struct file* files;
 extern int file_num;
@@ -9,7 +7,7 @@ extern int file_num;
 
 void exec_command(char* args1){
 	struct file* files_begin_ptr = files;
-	//char* command_ptr = (char*)simple_malloc(32);
+	//char* command_ptr = (char*)y_malloc(32);
 	unsigned check_value = 0; //for checking find out the file or not
 	//read_command(command_ptr);
 	
@@ -25,7 +23,7 @@ void exec_command(char* args1){
 			asm volatile ("msr spsr_el1, %0" :: "r" (spsr_el1));
 			unsigned long jump_addr = 0x20000;
 			asm volatile ("msr elr_el1, %0":: "r" (jump_addr));
-			unsigned long sp = (unsigned long)simple_malloc(32);
+			unsigned long sp = (unsigned long)y_malloc(32);
 			asm volatile("msr sp_el0, %0":: "r" (sp));
 			asm volatile("eret");
 

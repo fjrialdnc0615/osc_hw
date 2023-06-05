@@ -1,11 +1,5 @@
-#include "utils.h"
-#include "mailbox.h"
-#include "_cpio.h"
-#include "dtb.h"
-#include "uart.h"
-#include "allocator.h"
-#include "exec.h"
-#include "timer.h"
+#include "poly.h"
+
 #define AUX_MU_IER_REG ((volatile unsigned int*)(0x3f215044))
 extern unsigned int timer_begin;
 extern void *_dtb_ptr;
@@ -81,12 +75,12 @@ void shell_command(char* input_string) {
 	}
 	else if (str_compare(args[0],"malloc"))
 	{
-		char *test_malloc = simple_malloc(sizeof("12345"));
+		char *test_malloc = y_malloc(sizeof("12345"));
 		test_malloc[0] = 'a';
 		test_malloc[1] = 'b';
 		test_malloc[2] = 'c';
 		test_malloc[3] = '\0';
-		char *test_malloc2 = simple_malloc(sizeof("123"));
+		char *test_malloc2 = y_malloc(sizeof("123"));
 		test_malloc2[0] = '1';
 		test_malloc2[1] = '2';
 		test_malloc2[2] = '3';

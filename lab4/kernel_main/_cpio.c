@@ -1,10 +1,4 @@
-#include "uart.h"
-#include "_cpio.h"
-#include "utils.h"
-#include "allocator.h"
-#include "dtb.h"
-
-extern char* cpio_addr;
+#include "poly.h"
 
 char cpio_array_space[128] = {0}; //using for cat
 #define MAX_FILES 128
@@ -20,7 +14,7 @@ void read_file() {
     while (1) {
         if (file_num >= max_files) {
             max_files += 10;
-            files = (struct file *) simple_malloc(max_files * sizeof(struct file));
+            files = (struct file *) y_malloc(max_files * sizeof(struct file));
         }
 
         struct cpio_header *cpio_addr = (struct cpio_header *) addr;
